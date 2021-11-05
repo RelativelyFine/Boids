@@ -10,6 +10,9 @@ VISION_RANGE = 100
 BOIDS_NUM = 200
 ALIGNMENT = 4
 SPRITE_SCALING = 0.02
+COHESION = 5
+SEPARATION = 1
+PERSONAL_SPACE = 10
 
 
 class Screener(arcade.Window):
@@ -58,8 +61,24 @@ class Screener(arcade.Window):
             now_delta = (to_be_angle - b1.angle) * delta_time * ALIGNMENT
             b1.angle += now_delta
 
-            mid_x = tot_pos_x / num
-            mid_y = tot_pos_y / num
+            tot_pos_x_avg = (tot_pos_x / num)
+            tot_pos_y_avg = (tot_pos_y / num)
+
+            to_be_angle_dir = math.degrees(
+                math.atan2(tot_pos_x_avg - b1.center_x,
+                           tot_pos_y_avg - b1.center_y))
+            if to_be_angle_dir < 0:
+                to_be_angle_dir += 360
+
+            diff_ang = -(b1.angle - to_be_angle_dir)
+
+            if diff_ang > 90:
+                b1.speed -= 0.1 * delta_time
+                diff_ang -= (diff_ang - 90) * 2
+            else:
+                b1.speed += 0.1 * delta_time
+
+            b1.angle += diff_ang * delta_time * COHESION
 
         self.timey += delta_time
         for i in self.boid_list:

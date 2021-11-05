@@ -10,7 +10,7 @@ class Boid(arcade.Sprite):
     def __init__(self, image, scale):
         super().__init__(image, scale)
         self.speed = 5
-        self.acceleration = 1
+        self.acceleration = 0.5
         self.boundary_top = 1080
         self.boundary_bottom = 0
         self.boundary_left = 0
@@ -18,7 +18,7 @@ class Boid(arcade.Sprite):
         self.max_speed = 10
 
     def update(self, time):
-        self.speed = START_SPEED + (
+        self.speed = START_SPEED + self.acceleration * (
             (MAX_SPEED) /
             (1 + math.exp(-time + 5))) - (self.change_angle / MAX_SPEED)
 
